@@ -8,7 +8,7 @@ function App() {
   const [description, setDescription] = useState();
   const [uploadedComments, setUploadedComments] = useState([]);
   const [sortBy, setSortBy] = useState("newToOld"); // 初始值為由新到舊
-  const [commentsPerPage, setCommentsPerPage] = useState(10); // 每頁顯示的留言篇數
+  const [commentsPerPage, setCommentsPerPage] = useState(5); // 每頁顯示的留言篇數
   const [currentPage, setCurrentPage] = useState(1); // 當前頁數
 
   const handleFileChange = (e) => {
@@ -19,10 +19,10 @@ function App() {
         const img = new Image();
         img.src = event.target.result;
         img.onload = () => {
-          const scaleFactor = 300 / img.width; // 計算縮小比例
+          const scaleFactor = 500 / img.width; // 計算縮小比例
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
-          canvas.width = 300;
+          canvas.width = 500;
           canvas.height = img.height * scaleFactor;
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
   
@@ -109,7 +109,7 @@ function App() {
 
   return (
     <section className="wrap">
-      <h1 className="site_title">你的留言板</h1>
+      <h1 className="site_title">曬貓板</h1>
       <div className="commentform">
         <div>
           <div className="textWrap">
@@ -231,7 +231,7 @@ function App() {
           .map((comment, index) => {
             return (
               <div className="card" key={index}>
-                <h5 className="card-title">{comment.title}</h5>
+                <h3 className="card-title">{comment.title}</h3>
                 <img src={`https://commentapi.financialproblem.icu/images/` + comment.image} />
                 <p className="card-text">{comment.description}</p>
                 <p className="card-text">{comment.date.split("T")[0]}</p>

@@ -121,6 +121,7 @@ ul{
 .cards{
   display: flex;
   flex-wrap: wrap;
+  padding-top: 30px;
 }
 .card{
   max-width: 300px;  
