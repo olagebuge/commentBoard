@@ -100,7 +100,9 @@ function App() {
   const totalPages = Math.ceil(uploadedComments.length / commentsPerPage);
 
   const handlePageChange = (page) => {
-    setCurrentPage(page);
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   useEffect(() => {
@@ -127,13 +129,13 @@ function App() {
             </label>
 
             <label htmlFor="description">
-              留言內容
+              貓咪敘述
               <textarea
                 type="text"
                 name="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="內容"
+                placeholder="內容敘述"
               ></textarea>
             </label>
           </div>
@@ -157,10 +159,10 @@ function App() {
           </div>
         </div>
 
-        <button onClick={handleUpload}> 發布留言</button>
+        <button onClick={handleUpload}> 發布貓咪</button>
       </div>
 
-      <h2>目前所有留言</h2>
+      <h2>所有貓咪</h2>
       <section className="navAndFilter">
         <ul className="filterBox">
           <li
@@ -182,17 +184,18 @@ function App() {
               value={commentsPerPage}
               onChange={handleCommentsPerPageChange}
             >
-              <option value="5">一頁5篇</option>
-              <option value="10">一頁10篇</option>
-              <option value="15">一頁15篇</option>
-              <option value="20">一頁20篇</option>
+              <option value="5">顯示5篇</option>
+              <option value="10">顯示10篇</option>
+              <option value="15">顯示15篇</option>
+              <option value="20">顯示20篇</option>
             </select>
           </li>
         </ul>
 
         <ul className="navigation">
           <li>
-            <button onClick={() => handlePageChange(currentPage - 1)}>
+            <button onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}>
               上一頁
             </button>
           </li>
@@ -207,7 +210,8 @@ function App() {
             </li>
           ))}
           <li>
-            <button onClick={() => handlePageChange(currentPage + 1)}>
+            <button onClick={() => handlePageChange(currentPage + 1)}
+             disabled={currentPage === totalPages}>
               下一頁
             </button>
           </li>

@@ -1,0 +1,192 @@
+// 常用彈性盒子屬性
+%flexbox {
+    display: flex;
+    justify-content: center;
+}
+// 主要色系
+$main-color:#356f80;
+
+//RWD
+@mixin pad {
+    @media (max-width:900px) {
+        @content;
+    }
+}
+@mixin mobile{
+    @media(max-width:480px){
+      @content;
+    }
+}
+
+//必要代碼
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    transition: .3s;
+  }
+
+  ul{
+    list-style: none;
+    justify-content: center;
+  }
+  
+  #root {
+    max-width: 1280px;
+    margin: 0 auto;    
+    text-align: center;
+  }
+
+
+  .site_title{
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+  .commentform{
+    @extend %flexbox;
+    flex-direction: column;
+    max-width: 600px; 
+    width:100%; 
+    padding: 20px;    
+    border-radius: 30px;
+    border: 1px solid #a3a3a3;  
+    margin: 30px auto;
+
+    @include mobile{
+        width: 90%;
+    }
+  }
+  .commentform>div{
+    display: flex;
+    
+    @include mobile{
+        flex-direction: column;
+    }
+
+  }
+  
+  .commentform .textWrap{
+    width: 50%;
+    @include mobile{
+        width: 100%;
+    }
+  }
+  
+  .commentform .textWrap label{
+    display: block;
+    margin: 10px;
+  }
+  .commentform label input[type="text"], .commentform label textarea{  
+    line-height: 1.6rem;
+    padding: 0.2rem 0.5rem;
+    display: flex;  
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .commentform button{
+    margin: 20px;
+    color: #fff;
+    background-color: #356f80;
+  }
+  
+  .imgUploadWrap{
+    @extend %flexbox; 
+    align-items: center;
+    border-radius: 18px;
+    margin: 20px 20px 0px;
+    width: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border: 1px dashed #c4c4c4; 
+    
+    @include mobile{
+        width: 100%;
+        padding: 30px 0px;
+        margin: 20px 0;
+    }
+  }
+  
+  .custom-file-upload  h4{
+    color: #bdbdbd;
+    border: 5px solid #bdbdbd;
+    border-radius: 40px;
+    cursor: pointer;
+    display: flex;   
+    padding: 5px 5px 8px;
+    line-height: 34px;  
+    font-size: 36px;
+  }
+  
+  .custom-file-upload input {
+    display: none; /* 隱藏原始的文件上傳輸入元素 */
+  } 
+  
+  .cards{
+    @extend %flexbox;
+    flex-wrap: wrap;
+  }
+  .card{
+    max-width: 300px;  
+    margin: 10px;
+  }
+  .card img{ 
+    width: 300px;
+  }
+  
+  .filterBox,.navigation{
+    display: flex;
+   @include pad{
+    margin: 8px 20px;
+   }
+  }
+  
+  .filterBox li{
+    line-height: 2.4rem;
+    padding:0px 15px;
+    margin: 0px 5px;
+    cursor: pointer;
+
+    >select{
+        padding: 5px;
+        font-size: 1rem;
+        border: none;
+        background-color:$main-color;
+        color:#fff;
+        border-radius: 15px;
+    }
+    
+    @include mobile{       
+        padding: 0 12px;
+        margin: 0;
+    }
+  }
+  
+  .filterBox li.active{
+    border: 2px solid $main-color;    
+    color: $main-color;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  
+  .filterBox li.active::before{
+    content: '✓';
+  }  
+
+  .navigation li{
+    margin: 0 5px;
+  }
+
+  .navAndFilter{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    @include pad{
+        justify-content: center;
+    }
+    @include mobile{
+        flex-direction: column;
+    }
+  }
