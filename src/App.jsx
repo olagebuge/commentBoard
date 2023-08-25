@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
-import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import LoadingSpiner from "./components/LoadingSpiner";
-
+import { trackPromise } from "react-promise-tracker";
 
 function App() {
   const [file, setFile] = useState(null);
@@ -84,17 +83,6 @@ function App() {
       .catch((err) => console.log(err));
   };
 
-  const fetchUploadedComments = () => {
-    trackPromise(
-      axios
-        .get("https://commentapi.financialproblem.icu/getImage")
-        .then((res) => {
-          setUploadedComments(res.data);
-        })
-        .catch((err) => console.log(err))
-    );
-  };
-
   const handleCommentsPerPageChange = (e) => {
     const selectedCommentsPerPage = parseInt(e.target.value);
     setCommentsPerPage(selectedCommentsPerPage);
@@ -109,10 +97,20 @@ function App() {
     }
   };
 
-  useEffect(() => {    
-    fetchUploadedComments();    
+  const fetchUploadedComments = () => {
+    trackPromise(
+      axios
+        .get("https://commentapi.financialproblem.icu/getImage")
+        .then((res) => {
+          setUploadedComments(res.data);
+        })
+        .catch((err) => console.log(err))
+    );
+  };
+
+  useEffect(() => {
+    fetchUploadedComments();
   }, []);
-  
 
   return (
     <section className="wrap">
@@ -230,41 +228,12 @@ function App() {
           </li>
         </ul>
       </section>
-
-      <div className="cards">
-      {usePromiseTracker().promiseInProgress ?
-          <LoadingSpiner />
-        : (
-          uploadedComments
-            .sort((a, b) => {
-              if (sortBy === "newToOld") {
-                return new Date(b.date) - new Date(a.date); // 由新到舊
-              } else if (sortBy === "oldToNew") {
-                return new Date(a.date) - new Date(b.date); // 由舊到新
-              }
-              return 0;
-            })
-            .slice(
-              (currentPage - 1) * commentsPerPage,
-              currentPage * commentsPerPage
-            ) // 根據當前頁數和每頁篇數進行篩選
-            .map((comment, index) => {
-              return (
-                <div className="card" key={index}>
-                  <h3 className="card-title">{comment.title}</h3>
-                  <img
-                    src={
-                      `https://commentapi.financialproblem.icu/images/` +
-                      comment.image
-                    }
-                  />
-                  <p className="card-text">{comment.description}</p>
-                  <p className="card-text">{comment.date.split("T")[0]}</p>
-                </div>
-              );
-            })
-        )}
-      </div>
+      <LoadingSpiner
+        uploadedComments={uploadedComments}
+        currentPage={currentPage}
+        commentsPerPage={commentsPerPage}
+        sortBy={sortBy}
+      />
     </section>
   );
 }
