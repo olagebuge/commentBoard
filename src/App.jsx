@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import axios from "axios";
+import { usePromiseTracker, trackPromise } from "react-promise-tracker";
+import LoadingSpiner from "./components/LoadingSpiner";
+
 
 function App() {
   const [file, setFile] = useState(null);
@@ -25,14 +28,14 @@ function App() {
           canvas.width = 500;
           canvas.height = img.height * scaleFactor;
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-  
+
           // 將縮小後的圖片轉換為 Blob 對象
           canvas.toBlob((blob) => {
             const resizedFile = new File([blob], selectedFile.name, {
               type: selectedFile.type,
               lastModified: selectedFile.lastModified,
             });
-  
+
             // 使用縮小後的圖片進行後續處理
             // 例如設定為 state 或上傳至伺服器等
             // 這裡只是示例，實際情況根據需要調整
@@ -45,19 +48,18 @@ function App() {
       setFile(null);
     }
   };
-  
 
-  const handleFileRemove =()=>{
-    if(file){
+  const handleFileRemove = () => {
+    if (file) {
       setFile(null);
     }
-  }
+  };
 
   const handleUpload = (e) => {
     e.preventDefault(); // 防止表單提交預設行為
 
-     // 檢查是否有未填寫的欄位
-     if (!file || !title || !description) {
+    // 檢查是否有未填寫的欄位
+    if (!file || !title || !description) {
       alert("請填寫所有必填欄位");
       return;
     }
@@ -83,12 +85,14 @@ function App() {
   };
 
   const fetchUploadedComments = () => {
-    axios
-      .get("https://commentapi.financialproblem.icu/getImage")
-      .then((res) => {
-        setUploadedComments(res.data);
-      })
-      .catch((err) => console.log(err));
+    trackPromise(
+      axios
+        .get("https://commentapi.financialproblem.icu/getImage")
+        .then((res) => {
+          setUploadedComments(res.data);
+        })
+        .catch((err) => console.log(err))
+    );
   };
 
   const handleCommentsPerPageChange = (e) => {
@@ -105,9 +109,10 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    fetchUploadedComments();
+  useEffect(() => {    
+    fetchUploadedComments();    
   }, []);
+  
 
   return (
     <section className="wrap">
@@ -154,7 +159,11 @@ function App() {
                 onChange={handleFileChange}
                 required
               />
-              {file ? <button onClick={handleFileRemove}>移除圖片</button> : <h4>＋</h4>}
+              {file ? (
+                <button onClick={handleFileRemove}>移除圖片</button>
+              ) : (
+                <h4>＋</h4>
+              )}
             </label>
           </div>
         </div>
@@ -194,8 +203,10 @@ function App() {
 
         <ul className="navigation">
           <li>
-            <button onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}>
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
               上一頁
             </button>
           </li>
@@ -210,8 +221,10 @@ function App() {
             </li>
           ))}
           <li>
-            <button onClick={() => handlePageChange(currentPage + 1)}
-             disabled={currentPage === totalPages}>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
               下一頁
             </button>
           </li>
@@ -219,29 +232,38 @@ function App() {
       </section>
 
       <div className="cards">
-        {uploadedComments
-          .sort((a, b) => {
-            if (sortBy === "newToOld") {
-              return new Date(b.date) - new Date(a.date); // 由新到舊
-            } else if (sortBy === "oldToNew") {
-              return new Date(a.date) - new Date(b.date); // 由舊到新
-            }
-            return 0;
-          })
-          .slice(
-            (currentPage - 1) * commentsPerPage,
-            currentPage * commentsPerPage
-          ) // 根據當前頁數和每頁篇數進行篩選
-          .map((comment, index) => {
-            return (
-              <div className="card" key={index}>
-                <h3 className="card-title">{comment.title}</h3>
-                <img src={`https://commentapi.financialproblem.icu/images/` + comment.image} />
-                <p className="card-text">{comment.description}</p>
-                <p className="card-text">{comment.date.split("T")[0]}</p>
-              </div>
-            );
-          })}
+      {usePromiseTracker().promiseInProgress ?
+          <LoadingSpiner />
+        : (
+          uploadedComments
+            .sort((a, b) => {
+              if (sortBy === "newToOld") {
+                return new Date(b.date) - new Date(a.date); // 由新到舊
+              } else if (sortBy === "oldToNew") {
+                return new Date(a.date) - new Date(b.date); // 由舊到新
+              }
+              return 0;
+            })
+            .slice(
+              (currentPage - 1) * commentsPerPage,
+              currentPage * commentsPerPage
+            ) // 根據當前頁數和每頁篇數進行篩選
+            .map((comment, index) => {
+              return (
+                <div className="card" key={index}>
+                  <h3 className="card-title">{comment.title}</h3>
+                  <img
+                    src={
+                      `https://commentapi.financialproblem.icu/images/` +
+                      comment.image
+                    }
+                  />
+                  <p className="card-text">{comment.description}</p>
+                  <p className="card-text">{comment.date.split("T")[0]}</p>
+                </div>
+              );
+            })
+        )}
       </div>
     </section>
   );
