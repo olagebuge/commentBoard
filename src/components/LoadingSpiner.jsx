@@ -7,7 +7,7 @@ const LoadingSpiner = ({ uploadedComments, currentPage, commentsPerPage, sortBy 
   return ( 
       <div className="cards">
       {usePromiseTracker().promiseInProgress ?
-         <PuffLoader color="#4ebaa4" />
+         <PuffLoader color="#4ebaa4" className="loader-margin"/>
         : (
           uploadedComments
             .sort((a, b) => {

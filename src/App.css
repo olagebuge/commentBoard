@@ -232,4 +232,8 @@ ul {
             flex-direction: column;
   }
 }
+
+.loader-margin {
+  margin-top: 3rem;
+}
 /*# sourceMappingURL=App.css.map */

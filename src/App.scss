@@ -137,10 +137,12 @@ $main-color:#356f80;
   
   .filterBox,.navigation{
     display: flex;
+    
    @include pad{
     margin: 8px 20px;
    }
   }
+  
   
   .filterBox li{
     line-height: 2.4rem;
@@ -189,4 +191,8 @@ $main-color:#356f80;
     @include mobile{
         flex-direction: column;
     }
+  }
+
+  .loader-margin{
+    margin-top: 3rem;
   }
